@@ -33,6 +33,9 @@ def parse_args():
         help="print the value set of the key.",
     )
     parser.add_argument(
+        "--new_key", default=None, type=str, help="new key to replace the key."
+    )
+    parser.add_argument(
         "--print_example",
         "-e",
         default=False,
