@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jt"
+version = "0.0.0"
+description = "A useful tool for json file."
+authors = [{ name = "tianhaohu", email = "tianhaohu1024@foxmail.com" }]
+requires-python = ">=3.8"
+dependencies = []
+
+
+[project.scripts]
+jt = "jt.cli:main"
