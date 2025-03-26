@@ -61,6 +61,51 @@ def print_description(dataset):
     print_key_tree(dataset)
 
 
+def get_value_by_key_list(data, key_list):
+    if len(key_list) == 0:
+        return data
+    else:
+        try:
+            return get_value_by_key_list(data[key_list[0]], key_list[1:])
+        except Exception:
+            raise ValueError(f"Do not find value with key list: {key_list}")
+
+
+def delete_value_by_key_list(data, key_list):
+    try:
+        if len(key_list) == 1:
+            value = data[key_list[0]]
+            del data[key_list[0]]
+            return value
+        else:
+            return delete_value_by_key_list(data[key_list[0]], key_list[1:])
+    except Exception as e:
+        print(str(e))
+
+
+def set_value_by_key_list(data, key_list, value):
+    if len(key_list) == 1:
+        if not isinstance(data, Dict):
+            raise TypeError("")
+        data[key_list[0]] = value
+    else:
+        set_value_by_key_list(data[key_list[0]], key_list[1:], value)
+
+
+def key_related(args, dataset):
+    key_list = args.key.split(".")
+    if args.value_set:
+        value_set = set()
+        for data in dataset:
+            value_set.add(get_value_by_key_list(data, key_list))
+        pprint(value_set)
+    elif args.new_key:
+        new_key_list = args.new_key.split(".")
+        for data in dataset:
+            value = delete_value_by_key_list(data, key_list)
+            set_value_by_key_list(data, new_key_list, value)
+
+
 def process_jsonl(args):
     f = open(args.file, "r")
     if args.description:
@@ -72,6 +117,9 @@ def process_jsonl(args):
         for i, line in enumerate(f):
             if i == args.index:
                 pprint(json.loads(line))
+    elif args.key:
+        dataset = [json.loads(line) for line in f.readlines()]
+        key_related(args, dataset)
 
     f.close()
 
@@ -85,6 +133,8 @@ def process_json(args):
         print_key_tree(dataset)
     elif args.print_example:
         pprint(dataset[args.index])
+    elif args.key:
+        key_related(args, dataset)
 
     f.close()
 
