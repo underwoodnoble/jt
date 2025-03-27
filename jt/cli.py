@@ -49,7 +49,8 @@ def parse_args():
 def print_key_tree(data, indent=1):
     if isinstance(data, List):
         print("...." * indent, "[")
-        print_key_tree(data[0], indent + 1)
+        if len(data) > 0:
+            print_key_tree(data[0], indent + 1)
         print("...." * indent, "]")
     elif isinstance(data, Dict):
         for key in data.keys():
@@ -113,7 +114,7 @@ def process_jsonl(args):
     f = open(args.file, "r")
     if args.description:
         dataset = [json.loads(line) for line in f.readlines()]
-        print_description(dataset[0])
+        print_description(dataset)
     elif args.structure:
         print_key_tree(json.loads(f.readline()))
     elif args.print_example:
